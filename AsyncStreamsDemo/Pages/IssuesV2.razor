@@ -52,10 +52,12 @@
         myIssues.Clear();
 
         myCancellationTokenSource = new CancellationTokenSource();
+        var ct = myCancellationTokenSource.Token;
 
         try
         {
-            foreach (var issueTask in IssueService.GetIssuesAsync2(OwnerName, RepoName, myCancellationTokenSource.Token))
+           
+            foreach (var issueTask in IssueService.GetIssuesAsync2(OwnerName, RepoName, ct))
             {
                 var issue = await issueTask;
                 if (issue == null) break;

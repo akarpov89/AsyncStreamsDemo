@@ -70,14 +70,11 @@ else
         });
 
         myCancellationTokenSource = new CancellationTokenSource();
+        var ct = myCancellationTokenSource.Token;
 
         try
         {
-            myIssues = await IssueService.GetIssuesAsync1(
-                OwnerName,
-                RepoName,
-                progress,
-                myCancellationTokenSource.Token);
+            myIssues = await IssueService.GetIssuesAsync1(OwnerName, RepoName, progress, ct);
 
             StateHasChanged();
         }

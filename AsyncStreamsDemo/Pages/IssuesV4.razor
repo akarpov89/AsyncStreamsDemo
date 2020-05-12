@@ -52,10 +52,11 @@
         myIssues.Clear();
 
         myCancellationTokenSource = new CancellationTokenSource();
+        var ct = myCancellationTokenSource.Token;
 
         try
         {
-            await foreach (var issue in IssueService.GetIssuesAsync4(OwnerName, RepoName, myCancellationTokenSource.Token))
+            await foreach (var issue in IssueService.GetIssuesAsync4(OwnerName, RepoName, ct))
             {
                 myIssues.Add(issue);
                 StateHasChanged();

@@ -52,13 +52,14 @@
         myIssues.Clear();
 
         myCancellationTokenSource = new CancellationTokenSource();
+        var ct = myCancellationTokenSource.Token;
 
         IssueService.GetIssuesAsync3(OwnerName, RepoName)
             .Subscribe(issue =>
             {
                 myIssues.Add(issue);
                 StateHasChanged();
-            }, myCancellationTokenSource.Token);
+            }, ct);
     }
 
     private void CancelLoading()
