@@ -1,0 +1,68 @@
+@page "/issues/v3"
+@inject IssuesProvider IssueService;
+
+@{
+    #nullable enable
+}
+
+<h3>
+    <a href="https://github.com/@OwnerName" target="_blank">@OwnerName</a>
+    /
+    <a href="https://github.com/@OwnerName/@RepoName" target="_blank">@RepoName</a>
+    issues
+</h3>
+
+<button class="btn btn-success" @onclick="StartLoading">Load</button>
+<button class="btn btn-danger" @onclick="CancelLoading">Cancel</button>
+
+<p></p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var issue in myIssues)
+    {
+        <tr>
+            <td style="max-width: 500px"><a href="@issue.Url" target="_blank">@issue.Title</a></td>
+            <td>@issue.Categorize()</td>
+            <td><a href="@issue.Author?.Url" target="_blank">@issue.Author?.Login</a></td>
+            <td>@issue.State.ToString()</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    private const string OwnerName = "dotnet";
+    private const string RepoName = "roslyn";
+
+    private readonly List<Issue> myIssues = new List<Issue>();
+
+    private CancellationTokenSource? myCancellationTokenSource;
+
+    private void StartLoading()
+    {
+        myIssues.Clear();
+
+        myCancellationTokenSource = new CancellationTokenSource();
+
+        IssueService.GetIssuesAsync3(OwnerName, RepoName)
+            .Subscribe(issue =>
+            {
+                myIssues.Add(issue);
+                StateHasChanged();
+            }, myCancellationTokenSource.Token);
+    }
+
+    private void CancelLoading()
+    {
+        myCancellationTokenSource?.Cancel();
+    }
+}

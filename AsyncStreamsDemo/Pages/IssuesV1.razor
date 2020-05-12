@@ -1,11 +1,15 @@
 @page "/"
 @inject IssuesProvider IssueService;
 
+@{
+    #nullable enable
+}
+
 <h3>
-    GitHub Issues for
     <a href="https://github.com/@OwnerName" target="_blank">@OwnerName</a>
     /
     <a href="https://github.com/@OwnerName/@RepoName" target="_blank">@RepoName</a>
+    issues
 </h3>
 
 <button class="btn btn-success" @onclick="StartLoading">Load</button>
@@ -13,7 +17,7 @@
 
 @if (myIssues == null)
 {
-    <p>Issues count: @myIssuesCount</p>
+    <p>Issues count: 0</p>
 }
 else
 {
@@ -46,10 +50,10 @@ else
     private const string OwnerName = "dotnet";
     private const string RepoName = "roslyn";
 
-    private IEnumerable<Issue> myIssues;
+    private IEnumerable<Issue>? myIssues;
     private int myIssuesCount;
 
-    private CancellationTokenSource myCancellationTokenSource;
+    private CancellationTokenSource? myCancellationTokenSource;
 
     private async void StartLoading()
     {
@@ -69,7 +73,7 @@ else
 
         try
         {
-            myIssues = await IssueService.GetIssuesAsync(
+            myIssues = await IssueService.GetIssuesAsync1(
                 OwnerName,
                 RepoName,
                 progress,
@@ -84,7 +88,7 @@ else
 
     private void CancelLoading()
     {
-        myCancellationTokenSource.Cancel();
+        myCancellationTokenSource?.Cancel();
     }
 
     public class ActionProgress : IProgress<int>

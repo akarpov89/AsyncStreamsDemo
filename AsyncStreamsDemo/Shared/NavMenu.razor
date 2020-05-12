@@ -1,0 +1,42 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Implementations</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" Match="NavLinkMatch.All" href="/">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Task&lt;IEnumerable&lt;T&gt;&gt;
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="issues/v2">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> IEnumerable&lt;Task&lt;T&gt;&gt;
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="issues/v3">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> IObservable&lt;T&gt;
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="issues/v4">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> IAsyncEnumerable&lt;T&gt;
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
