@@ -6,7 +6,11 @@ namespace AsyncStreamsDemo.Data
   {
     public static string Categorize(this Issue issue)
     {
-      var resolution = "";
+      const string areaPrefix = "area-";
+      const string idePrefix = "ide-";
+      const string newFeaturePrefix = "new feature - ";
+      const string newLanguageFeaturePrefix = "new language feature - ";
+
       var subsystem = "";
       var languageFeature = "";
 
@@ -14,25 +18,21 @@ namespace AsyncStreamsDemo.Data
       {
         foreach (var label in issue.Labels)
         {
-          if (label.StartsWith("resolution-", StringComparison.OrdinalIgnoreCase))
+          if (label.StartsWith(areaPrefix, StringComparison.OrdinalIgnoreCase))
           {
-            resolution = label.Substring("resolution-".Length);
+            subsystem = label.Substring(areaPrefix.Length);
           }
-          else if (label.StartsWith("area-", StringComparison.OrdinalIgnoreCase))
+          else if (label.StartsWith(idePrefix, StringComparison.OrdinalIgnoreCase))
           {
-            subsystem = label.Substring("area-".Length);
+            subsystem = label.Substring(idePrefix.Length);
           }
-          else if (label.StartsWith("ide-", StringComparison.OrdinalIgnoreCase))
+          else if (label.StartsWith(newFeaturePrefix, StringComparison.OrdinalIgnoreCase))
           {
-            subsystem = label.Substring("ide-".Length);
+            languageFeature = label.Substring(newFeaturePrefix.Length);
           }
-          else if (label.StartsWith("new feature - ", StringComparison.OrdinalIgnoreCase))
+          else if (label.StartsWith(newLanguageFeaturePrefix, StringComparison.OrdinalIgnoreCase))
           {
-            languageFeature = label.Substring("new feature - ".Length);
-          }
-          else if (label.StartsWith("new language feature - ", StringComparison.OrdinalIgnoreCase))
-          {
-            languageFeature = label.Substring("new language feature - ".Length);
+            languageFeature = label.Substring(newLanguageFeaturePrefix.Length);
           }
         }
       }
@@ -40,7 +40,7 @@ namespace AsyncStreamsDemo.Data
       if (!string.IsNullOrEmpty(languageFeature)) return languageFeature;
       if (!string.IsNullOrEmpty(subsystem)) return subsystem;
 
-      return resolution;
+      return "";
     }
   }
 }
