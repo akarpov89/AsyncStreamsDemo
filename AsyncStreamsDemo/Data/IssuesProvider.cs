@@ -20,7 +20,7 @@ namespace AsyncStreamsDemo.Data
     // Follow these steps to generate your personal GitHub access token:
     // https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
     //
-    private const string GitHubAccessToken = "806b4a59501f1787f0f8111a43cb3ee60f9fab39";
+    private const string GitHubAccessToken = "";
 
     private const string IssuesQuery =
       @"query ($owner_name: String!, $repo_name: String!,  $start_cursor:String) {
