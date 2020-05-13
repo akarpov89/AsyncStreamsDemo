@@ -14,6 +14,7 @@
 
 <button class="btn btn-success" @onclick="StartLoading">Load</button>
 <button class="btn btn-danger" @onclick="CancelLoading">Cancel</button>
+<button class="btn btn-danger" @onclick="CancelLoading2">Cancel2</button>
 
 <p></p>
 
@@ -40,35 +41,57 @@
 </table>
 
 @code {
-    private const string OwnerName = "dotnet";
-    private const string RepoName = "roslyn";
+  private const string OwnerName = "dotnet";
+  private const string RepoName = "roslyn";
 
-    private readonly List<Issue> myIssues = new List<Issue>();
+  private readonly List<Issue> myIssues = new List<Issue>();
 
-    private CancellationTokenSource? myCancellationTokenSource;
+  private CancellationTokenSource? myCancellationTokenSource;
+  private CancellationTokenSource? myCancellationTokenSource2;
 
-    private async void StartLoading()
+  private async void StartLoading()
+  {
+      myIssues.Clear();
+
+      myCancellationTokenSource = new CancellationTokenSource();
+      var ct = myCancellationTokenSource.Token;
+
+      myCancellationTokenSource2 = new CancellationTokenSource();
+      var ct2 = myCancellationTokenSource2.Token;
+
+
+      try
+      {
+          await foreach (var issue in GetNullableReferenceTypesIssuesAsync().WithCancellation(ct))
+          {
+              myIssues.Add(issue);
+              StateHasChanged();
+          }
+      }
+      catch (OperationCanceledException)
+      {
+      }
+  }
+
+    private IAsyncEnumerable<Issue> GetNullableReferenceTypesIssuesAsync()
     {
-        myIssues.Clear();
+        return IssueService.GetIssuesAsync4(OwnerName, RepoName)
+            .WhereAwaitWithCancellation(async (issue, ct) => await Predicate(issue));
+    }
 
-        myCancellationTokenSource = new CancellationTokenSource();
-        var ct = myCancellationTokenSource.Token;
-
-        try
-        {
-            await foreach (var issue in IssueService.GetIssuesAsync4(OwnerName, RepoName, ct))
-            {
-                myIssues.Add(issue);
-                StateHasChanged();
-            }
-        }
-        catch (OperationCanceledException)
-        {
-        }
+    private static async Task<bool> Predicate(Issue issue)
+    {
+        await Task.Delay(0);
+        return issue.Categorize() == "Nullable Reference Types";
     }
 
     private void CancelLoading()
-    {
-        myCancellationTokenSource?.Cancel();
-    }
+  {
+      myCancellationTokenSource?.Cancel();
+  }
+
+  private void CancelLoading2()
+  {
+      myCancellationTokenSource2?.Cancel();
+  }
 }

@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,6 +15,13 @@ namespace AsyncStreamsDemo.Data
 {
   public class IssuesProvider
   {
+    //
+    // IMPORTANT!
+    // Follow these steps to generate your personal GitHub access token:
+    // https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
+    //
+    private const string GitHubAccessToken = "806b4a59501f1787f0f8111a43cb3ee60f9fab39";
+
     private const string IssuesQuery =
       @"query ($owner_name: String!, $repo_name: String!,  $start_cursor:String) {
             repository(owner: $owner_name, name: $repo_name) {
@@ -151,7 +159,7 @@ namespace AsyncStreamsDemo.Data
     public async IAsyncEnumerable<Issue> GetIssuesAsync4(
       string ownerName,
       string repoName,
-      CancellationToken cancellationToken = default)
+      [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
       var request = new IssuesRequest {OwnerName = ownerName, RepoName = repoName, Query = IssuesQuery};
 
@@ -181,7 +189,7 @@ namespace AsyncStreamsDemo.Data
 
       var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri("https://api.github.com/graphql"));
 
-      httpRequestMessage.Headers.Add("Authorization", $"Token {Authorization.Token}");
+      httpRequestMessage.Headers.Add("Authorization", $"Token {GitHubAccessToken}");
       httpRequestMessage.Content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
       var httpResponseMessage = await myHttpClient.SendAsync(httpRequestMessage, token).ConfigureAwait(false);
