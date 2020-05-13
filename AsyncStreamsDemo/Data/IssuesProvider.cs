@@ -58,14 +58,14 @@ namespace AsyncStreamsDemo.Data
       IProgress<int> progress,
       CancellationToken cancellationToken = default)
     {
-      const int maxIssuesCount = 200;
+      const int maxIssuesCount = 100;
       var issues = new List<Issue>();
 
       var request = new IssuesRequest {OwnerName = ownerName, RepoName = repoName, Query = IssuesQuery};
 
       while (true)
       {
-        await Task.Delay(200, cancellationToken).ConfigureAwait(false);
+        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
 
         var response = await PostAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -104,7 +104,7 @@ namespace AsyncStreamsDemo.Data
         if (currentPage == null || currentIndex >= currentPage.Count)
         {
           currentIndex = 0;
-          await Task.Delay(200, cancellationToken).ConfigureAwait(false);
+          await Task.Delay(100, cancellationToken).ConfigureAwait(false);
 
           var currentResponse = await PostAsync(request, cancellationToken).ConfigureAwait(false);
           currentPage = currentResponse.Issues.ToList();
@@ -126,7 +126,7 @@ namespace AsyncStreamsDemo.Data
 
         while (true)
         {
-          await Task.Delay(200, cancellationToken).ConfigureAwait(false);
+          await Task.Delay(100, cancellationToken).ConfigureAwait(false);
 
           var response = await PostAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -157,7 +157,7 @@ namespace AsyncStreamsDemo.Data
 
       while (true)
       {
-        await Task.Delay(200, cancellationToken).ConfigureAwait(false);
+        await Task.Delay(100, cancellationToken).ConfigureAwait(false);
 
         var response = await PostAsync(request, cancellationToken).ConfigureAwait(false);
 
